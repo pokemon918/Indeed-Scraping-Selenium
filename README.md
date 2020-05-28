@@ -14,6 +14,10 @@ The goal of the project is to automate your job seek and display the jobs you ar
 ## 4 Final Output:
 The final output is a csv file with the links to the jobs you are interested in, the tittle of the job, the company offering it, the number of days since the release and the condition/s you require
 
+You should see something like this:
+
+![csv-file](https://github.com/diego-florez/Selenium-Web-Scraping/blob/master/jobs.png)
+
 ## How it works:
 - Install Selenium --> https://pypi.org/project/selenium/
 - Install Chrome WebDriver --> https://www.liquidweb.com/kb/how-to-install-selenium-tools-on-ubuntu-18-04/
