@@ -25,7 +25,7 @@ wait = WebDriverWait(driver, 5)
 search_bar = driver.find_element_by_name("q")
 search_bar.clear()
 #type your job, also the location is taken --> ex: data analyst dublin
-keyword = "data analyst madrid"
+keyword = "data scientist madrid"
 search_bar.send_keys(keyword)
 search_bar.send_keys(Keys.RETURN)
 
@@ -51,18 +51,31 @@ days = []
 conditions = []
 for l in links:
     driver.get(l)
-    positions.append(driver.find_element_by_xpath("//h3[contains(@class, 'jobsearch-JobInfoHeader-title')]").text)
-    companies.append(driver.find_element_by_xpath("//div[contains(@class, 'icl-u-lg-mr--sm icl-u-xs-mr--xs')]").text)
+    #find job position
+    try:
+        position = driver.find_element_by_xpath("//h3[contains(@class, 'jobsearch-JobInfoHeader-title')]").text
+        positions.append(position)
+    except NoSuchElementException:
+        positions.append("no position description")
+    #find company
+    try:
+        company = driver.find_element_by_xpath("//div[contains(@class, 'icl-u-lg-mr--sm icl-u-xs-mr--xs')]").text
+        companies.append(company)
+    except NoSuchElementException:
+        companies.append("no company description")
     #release day
-    meta = driver.find_element_by_xpath("//div[contains(@class, 'jobsearch-JobMetadataFooter')]").text
-    #change días to days or your language translation
-    release_date = "días"
-    search = re.search(f"(\d+).*({release_date})", str(meta))
-    if search:
-        release = "".join([search.group(1)," ",search.group(2)])
-    else:
-        release = "today/yesterday"
-    days.append(release)
+    try:
+        meta = driver.find_element_by_xpath("//div[contains(@class, 'jobsearch-JobMetadataFooter')]").text
+        #change días to days or your language translation
+        release_date = "días"
+        search = re.search(f"(\d+).*({release_date})", str(meta))
+        if search:
+            release = "".join([search.group(1)," ",search.group(2)])
+        else:
+            release = "today/yesterday"
+        days.append(release)
+    except NoSuchElementException:
+        days.append("no release description")
     #my condition -- I wanted jobs that included python, change or add the conditions you'd like
     condition = "ython"
     if condition in driver.page_source:
@@ -71,7 +84,7 @@ for l in links:
         conditions.append("nop")
 
 #saving in csv
-with open('indeed.csv', 'w', newline='') as csvfile:
+with open('data-scientist.csv', 'w', newline='') as csvfile:
     fieldnames = ["job", "position", "company", "release day", "contains"]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
