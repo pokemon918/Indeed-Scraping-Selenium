@@ -25,7 +25,8 @@ wait = WebDriverWait(driver, 5)
 search_bar = driver.find_element_by_name("q")
 search_bar.clear()
 #type your job, also the location is taken --> ex: data analyst dublin
-keyword = "data scientist madrid"
+keyword = "data madrid"
+print("looking for",keyword)
 search_bar.send_keys(keyword)
 search_bar.send_keys(Keys.RETURN)
 
@@ -45,12 +46,19 @@ while True:
         print("links scraped")
         break
 
+offer_links = []
 positions = []
 companies = []
 days = []
 conditions = []
 for l in links:
     driver.get(l)
+    #get original link offer
+    try:
+        offer_link = driver.find_element_by_xpath("//div[contains(@class, 'icl-u-xs-hide icl-u-lg-block icl-u-lg-textCenter')]/a").get_attribute("href")
+        offer_links.append(offer_link)
+    except NoSuchElementException:
+        offer_links.append("no original link offer")
     #find job position
     try:
         position = driver.find_element_by_xpath("//h3[contains(@class, 'jobsearch-JobInfoHeader-title')]").text
@@ -84,13 +92,13 @@ for l in links:
         conditions.append("nop")
 
 #saving in csv
-with open('data-scientist.csv', 'w', newline='') as csvfile:
-    fieldnames = ["job", "position", "company", "release day", "contains"]
+with open("".join([keyword.replace(" ","-"), ".csv"]), 'w', newline='') as csvfile:
+    fieldnames = ["indeed_link", "offer_link", "position", "company", "release day", "contains"]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
     writer.writeheader()
-    for link, position, company, release, condition in zip(links, positions, companies, days, conditions):
-        writer.writerow({"job": link, "position":position, "company":company, "release day":release, "contains": condition})
-print("csv file available")
+    for link, offer_link, position, company, release, condition in zip(links, offer_links, positions, companies, days, conditions):
+        writer.writerow({"indeed_link":link, "offer_link":offer_link, "position":position, "company":company, "release day":release, "contains":condition})
+print("".join([keyword.replace(" ","-"), ".csv file available"]))
 
     
