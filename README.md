@@ -1,4 +1,4 @@
-# Scraping Indeed with Selenium
+# Indeed Scraping with Selenium
 
 ## 1 Intro:
 In this repo you will learn how to make a basic scrape in Indeed using Selenium
